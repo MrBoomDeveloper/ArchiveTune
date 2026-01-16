@@ -584,9 +584,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
-                    val windowsInsets = WindowInsets.systemBars
+                    val windowsInsets = WindowInsets.safeDrawing
                     val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
-                    val bottomInsetDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+                    val bottomInsetDp = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
                         
                     val useRail = currentWindowAdaptiveInfo().windowSizeClass
                         .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
@@ -704,11 +704,12 @@ class MainActivity : ComponentActivity() {
                             if (shouldShowNavigationBar && !useRail) bottom += NavigationBarHeight
                             if (!playerBottomSheetState.isDismissed) bottom += MiniPlayerHeight
                             windowsInsets
-                                .only((if(useRail) {
+                                .only((if(useRail && shouldShowNavigationBar) {
                                     WindowInsetsSides.Right
                                 } else WindowInsetsSides.Horizontal) + WindowInsetsSides.Top)
                                 .add(WindowInsets(top = AppBarHeight, bottom = bottom))
                         }
+                    
 
                     appBarScrollBehavior(
                         canScroll = {
